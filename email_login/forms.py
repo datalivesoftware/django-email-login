@@ -13,8 +13,8 @@ class EmailAuthenticationForm(forms.Form):
     """
     Form for authenticating users by their email address.
     """
-    email = forms.EmailField(label=_("Email address"))
-    password = forms.CharField(label=_("Password"), widget=forms.PasswordInput)
+    email = forms.EmailField(label=_("Email address"), required=True)
+    password = forms.CharField(label=_("Password"), required=True, widget=forms.PasswordInput)
 
     def __init__(self, request=None, *args, **kwargs):
         """
@@ -28,11 +28,11 @@ class EmailAuthenticationForm(forms.Form):
         super(EmailAuthenticationForm, self).__init__(*args, **kwargs)
 
     def clean(self):
-        email = self.cleaned_data.get('email').lower()
+        email = self.cleaned_data.get('email')
         password = self.cleaned_data.get('password')
 
         if email and password:
-            self.user_cache = authenticate(email=email, password=password)
+            self.user_cache = authenticate(email=email.lower(), password=password)
             if self.user_cache is None:
                 raise forms.ValidationError(_("Please enter a correct email address and password."))
             elif not self.user_cache.is_active:
@@ -67,7 +67,7 @@ class EmailUserCreationForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ("email",)
-        
+
     def clean_email(self):
         """ Validates that the email address is not already in use. """
         email = self.cleaned_data["email"].lower()
@@ -76,14 +76,14 @@ class EmailUserCreationForm(forms.ModelForm):
         except User.DoesNotExist:
             return email
         raise forms.ValidationError(_("A user with that email address already exists."))
-    
+
     def clean_password2(self):
         password1 = self.cleaned_data.get("password1", "")
         password2 = self.cleaned_data["password2"]
         if password1 != password2:
             raise forms.ValidationError(_("The two password fields didn't match."))
         return password2
-        
+
     def save(self, commit=True):
         user = super(EmailUserCreationForm, self).save(commit=False)
         user.username = email_to_username(user.email)
@@ -104,7 +104,7 @@ class EmailUserChangeForm(forms.ModelForm):
         f = self.fields.get('user_permissions', None)
         if f is not None:
             f.queryset = f.queryset.select_related('content_type')
-            
+
     def save(self, commit=True):
         user = super(EmailUserChangeForm, self).save(commit=False)
         user.username = email_to_username(user.email)
