@@ -39,14 +39,7 @@ class EmailAuthenticationForm(forms.Form):
                 raise forms.ValidationError(_("Please enter a correct email address and password."))
             elif not self.user_cache.is_active:
                 raise forms.ValidationError(_("This account is inactive."))
-        self.check_for_test_cookie()
         return self.cleaned_data
-
-    def check_for_test_cookie(self):
-        if self.request and not self.request.session.test_cookie_worked():
-            raise forms.ValidationError(
-                _("Your Web browser doesn't appear to have cookies enabled. "
-                  "Cookies are required for logging in."))
 
     def get_user_id(self):
         if self.user_cache:
