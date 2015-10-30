@@ -1,7 +1,7 @@
 # We need to override login view, the rest is ok.
-import django.contrib.auth.views.login as auth_login_view
 from django.conf.urls import url
 from django.contrib.auth.urls import urlpatterns as auth_urls
+from django.contrib.auth.views import login as auth_login_view
 
 from .forms import EmailAuthenticationForm
 
