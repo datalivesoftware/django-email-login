@@ -4,7 +4,7 @@ you can't login with an email address. As we don't want this, we have to
 replace the whole login method...
 """
 from django.contrib import admin
-from forms import EmailAuthenticationForm
+from .forms import EmailAuthenticationForm
 
 class EmailLoginAdminSite(admin.AdminSite):
     login_form = EmailAuthenticationForm
