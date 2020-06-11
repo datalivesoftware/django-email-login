@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 
 class EmailBackend(ModelBackend):
     
-    def authenticate(self, email=None, password=None):
+    def authenticate(self, request, email=None, password=None):
         try:
             user = User.objects.get(email__iexact=email.lower())
             if user.check_password(password):
