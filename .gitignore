@@ -37,3 +37,4 @@ nosetests.xml
 #Mr Developer
 .mr.developer.cfg
 
+__pycache__
